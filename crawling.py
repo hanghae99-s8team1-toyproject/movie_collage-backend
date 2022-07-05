@@ -77,7 +77,7 @@ for movie in movies:
         movie.find("img", {"class": None})["src"]
     movie_url = "https://indieground.kr/" + \
         movie.find("a", {"class": None})["href"]
-    movieUrl_seq = movie_url.split("=")[1].split("&")[0]
+    movieUrl_seq = int(movie_url.split("=")[1].split("&")[0])
 
     doc = {
         'title': title,
