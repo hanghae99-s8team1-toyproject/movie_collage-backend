@@ -1,8 +1,10 @@
 from pymongo import MongoClient
 import certifi
 from flask import Flask, render_template, jsonify
+from flask_cors import CORS
 from dotenv import load_dotenv
 import os
+
 
 load_dotenv()
 mongodbUri = os.environ.get('mongodbUri')
@@ -12,6 +14,8 @@ client = MongoClient(mongodbUri, tlsCAFile=ca)
 db = client.indieground
 
 app = Flask(__name__)
+app.config['DEBUG'] = True
+CORS(app)
 
 
 @app.route('/')
@@ -19,7 +23,7 @@ def home():
     return render_template('index.html')
 
 
-@app.route("/result", methods=["GET"])
+@app.route("/Result", methods=["GET"])
 def movie_get():
     movie_list = list(db.movies.find({}, {'_id': False}))
     return jsonify({'movies': movie_list})
