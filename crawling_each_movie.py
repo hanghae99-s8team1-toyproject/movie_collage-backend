@@ -33,7 +33,7 @@ data = requests.get(
 _URL_MOVIE_LIST = "https://indieground.kr/indie/libraryList.do?setYear=2021"
 
 
-def crawling_each_movie(url: str, src: str, actor: str, keyword: str):
+def crawling_each_movie(url: str, src: str, director: str, actor: str, keyword: str):
     response = requests.get(url, verify=False)
     soup = BeautifulSoup(response.content, "html.parser")
 
@@ -54,16 +54,9 @@ def crawling_each_movie(url: str, src: str, actor: str, keyword: str):
         '#cms-content > div.library_view > div.movie_story.library_view_box > dl:nth-child(1) > dd').text.strip()
     direct_intent = soup.select_one(
         '#cms-content > div.library_view > div.movie_story.library_view_box > dl:nth-child(2) > dd').text.strip()
-    director = soup.select_one(
-        '#cms-content > div.library_view > div.movie_info_wrap.library_view_box.cf > div.movie_info_text > div.detail > dl:nth-child(2) > dd').text.strip()
+    director = director
     actor = actor
-    # soup.select_one('# div.detail > dl:nth-child(3) > dd').text
     keyword = keyword
-    # soup.select_one('#cms-content > div.library_view > div.movie_info_wrap.library_view_box.cf > div.movie_info_text > div.detail > dl:nth-child(4) > dd')
-# div.detail > dl:nth-child(3) > dd
-# cms-content > div.library_view > div.movie_info_wrap.library_view_box.cf > div.movie_info_text > div.detail > dl:nth-child(3) > dd
-# cms-content > div.library_view > div.movie_info_wrap.library_view_box.cf > div.movie_info_text > div.detail > dl:nth-child(4) > dd
-# cms-content > div.library_view > div.movie_info_wrap.library_view_box.cf > div.movie_info_text > div.detail > dl:nth-child(3)
 
     doc = {
         'title': title,
@@ -124,7 +117,9 @@ for movie in movies:
         movie.find("a", {"class": None})["href"]
     thumbnail = "https://indieground.kr" + \
         movie.find("img", {"class": None})["src"]
+    director = movie.find("p", {"class": "director"}
+                          ).text.split(":")[1].strip()
     actor = movie.find("p", {"class": "actor"}).text.split(":")[1].strip()
     keyword = movie.find("p", {"class": "tag"}).get_text()
-    crawling_each_movie(movie_url, thumbnail, actor, keyword)
+    crawling_each_movie(movie_url, thumbnail, director, actor, keyword)
 driver.close()
